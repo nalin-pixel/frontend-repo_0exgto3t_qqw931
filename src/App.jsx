@@ -7,6 +7,7 @@ import Reports from './components/Reports';
 import PurchaseRequisitions from './components/PurchaseRequisitions';
 import Approvals from './components/Approvals';
 import GRN from './components/GRN';
+import MR from './components/MR';
 
 function App() {
   const [tab, setTab] = useState('masters');
@@ -20,9 +21,10 @@ function App() {
         {tab==='pr' && <PurchaseRequisitions />}
         {tab==='po' && <PurchaseOrders />}
         {tab==='grn' && <GRN />}
+        {tab==='mr' && <MR />}
         {tab==='reports' && <Reports />}
         {tab==='approvals' && <Approvals />}
-        {tab!=='masters' && tab!=='taxes' && tab!=='pr' && tab!=='po' && tab!=='grn' && tab!=='reports' && tab!=='approvals' && (
+        {!(['masters','taxes','pr','po','grn','mr','reports','approvals'].includes(tab)) && (
           <div className="p-6 text-white">Module coming soon</div>
         )}
       </div>
