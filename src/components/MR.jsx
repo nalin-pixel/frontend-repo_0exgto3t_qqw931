@@ -17,13 +17,19 @@ function ItemRow({ idx, row, items, onUpdate, onRemove, getStock }) {
   return (
     <div className="grid grid-cols-12 gap-2 items-center py-2 border-b border-slate-800">
       <div className="col-span-4">
-        <select value={row.item_id||''} onChange={(e)=>onUpdate({ ...row, item_id: e.target.value?parseInt(e.target.value):null })}
-          className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1">
-          <option value="">Select item</option>
-          {items.map(it=> (
-            <option key={it.id} value={it.id}>{it.name} ({it.sku})</option>
-          ))}
-        </select>
+        <div className="space-y-1">
+          <select value={row.item_id||''} onChange={(e)=>onUpdate({ ...row, item_id: e.target.value?parseInt(e.target.value):null })}
+            className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1">
+            <option value="">Select item</option>
+            {items.map(it=> (
+              <option key={it.id} value={it.id}>{it.name} ({it.sku})</option>
+            ))}
+          </select>
+          <div className="flex items-center gap-2 text-xs text-slate-300">
+            <span className="text-slate-400">Quantity</span>
+            <NumberInput value={row.qty_requested} onChange={(v)=>onUpdate({ ...row, qty_requested: v })} className="w-20" />
+          </div>
+        </div>
       </div>
       <div className="col-span-2">
         <NumberInput value={row.qty_requested} onChange={(v)=>onUpdate({ ...row, qty_requested: v })} />
