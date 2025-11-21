@@ -47,6 +47,8 @@ export default function PurchaseOrders() {
 
   const addLine = () => {
     if(!newLine.item_id) return;
+    if(newLine.qty_ordered <= 0){ setError('Quantity must be greater than zero'); return; }
+    if(newLine.unit_price < 0){ setError('Unit price cannot be negative'); return; }
     setForm(f=>({...f, items:[...f.items, {...newLine, item_id: parseInt(newLine.item_id)}]}));
     setNewLine({ item_id:'', qty_ordered:1, unit_price:0 });
   };
@@ -56,6 +58,12 @@ export default function PurchaseOrders() {
     if(!form.po_number){ setError('PO reference number is required'); return; }
     if(!form.pr_id && !form.supplier_id){ setError('Select a PR or choose a supplier'); return; }
     if(form.items.length === 0 && !form.pr_id){ setError('Add at least one item or select a PR'); return; }
+    // Line validations
+    for (const ln of form.items) {
+      if (!ln.item_id) { setError('Each line must have an item'); return; }
+      if (ln.qty_ordered <= 0) { setError('Line quantities must be greater than zero'); return; }
+      if (ln.unit_price < 0) { setError('Line prices cannot be negative'); return; }
+    }
     try {
       const payload = {
         po_number: form.po_number,
@@ -80,6 +88,14 @@ export default function PurchaseOrders() {
 
   const selectedPR = useMemo(()=> prs.find(p=>p.id === (typeof form.pr_id==='number' ? form.pr_id : parseInt(form.pr_id))) , [prs, form.pr_id]);
 
+  const useDifferentSupplier = () => {
+    if (!selectedPR) return;
+    // Allow choosing a different supplier by clearing PR link but keeping prefills
+    setForm(f=> ({...f, supplier_id: '', pr_id: '', items: f.items}));
+  };
+
+  const findPRNumber = (id) => prs.find(p=>p.id===id)?.pr_number;
+
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold text-white mb-4">Purchase Orders</h2>
@@ -101,7 +117,10 @@ export default function PurchaseOrders() {
                 ))}
               </select>
               {selectedPR ? (
-                <input disabled value={`Supplier: ${selectedPR.supplier_name || '-'} | Tax: ${selectedPR.tax_code || '-'} (${selectedPR.tax_percent ?? '-'}%)`} className="w-full px-3 py-2 bg-slate-900 text-blue-200 rounded outline-none"/>
+                <div className="flex gap-2">
+                  <input disabled value={`Supplier: ${selectedPR.supplier_name || '-'} | Tax: ${selectedPR.tax_code || '-'} (${selectedPR.tax_percent ?? '-'}%)`} className="w-full px-3 py-2 bg-slate-900 text-blue-200 rounded outline-none"/>
+                  <button type="button" onClick={useDifferentSupplier} className="px-2 py-1 bg-slate-700 text-white rounded whitespace-nowrap">Use different</button>
+                </div>
               ) : (
                 <select value={form.supplier_id} onChange={e=>setForm(f=>({...f, supplier_id:e.target.value}))} className="w-full px-3 py-2 bg-slate-900 text-white rounded outline-none">
                   <option value="">Select supplier</option>
@@ -146,6 +165,7 @@ export default function PurchaseOrders() {
               <div key={po.id} className="border border-slate-700 rounded p-2">
                 <div className="flex justify-between text-blue-300"><div>{po.po_number}</div><div>Status: {po.status}</div></div>
                 <div className="text-xs">Supplier: {suppliers.find(s=>s.id===po.supplier_id)?.name || po.supplier_id}</div>
+                <div className="text-xs">Linked PR: {po.pr_id ? (findPRNumber(po.pr_id) || `#${po.pr_id}`) : '-'}</div>
                 <div className="text-xs">Lines: {po.items.length}</div>
                 <div className="text-xs">Approval: {po.approval_status || 'PENDING'} {po.approval_level ? `(L${po.approval_level})` : ''}</div>
                 <div className="flex gap-2 mt-2">

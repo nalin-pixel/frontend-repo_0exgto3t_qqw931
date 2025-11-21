@@ -5,6 +5,7 @@ import Taxes from './components/Taxes';
 import PurchaseOrders from './components/PurchaseOrders';
 import Reports from './components/Reports';
 import PurchaseRequisitions from './components/PurchaseRequisitions';
+import Approvals from './components/Approvals';
 
 function App() {
   const [tab, setTab] = useState('masters');
@@ -18,7 +19,8 @@ function App() {
         {tab==='pr' && <PurchaseRequisitions />}
         {tab==='po' && <PurchaseOrders />}
         {tab==='reports' && <Reports />}
-        {tab!=='masters' && tab!=='taxes' && tab!=='pr' && tab!=='po' && tab!=='reports' && (
+        {tab==='approvals' && <Approvals />}
+        {tab!=='masters' && tab!=='taxes' && tab!=='pr' && tab!=='po' && tab!=='reports' && tab!=='approvals' && (
           <div className="p-6 text-white">Module coming soon</div>
         )}
       </div>

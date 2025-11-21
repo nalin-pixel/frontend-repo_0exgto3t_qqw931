@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, PackageSearch, Receipt, ShoppingCart, ClipboardList, Truck, BookOpen, Percent } from 'lucide-react';
+import { Menu, PackageSearch, Receipt, ShoppingCart, ClipboardList, Truck, BookOpen, Percent, Layers } from 'lucide-react';
 
 export default function Nav({ current, onChange }) {
   const [open, setOpen] = useState(true);
@@ -11,6 +11,7 @@ export default function Nav({ current, onChange }) {
     { key: 'mr', label: 'MR', icon: Receipt },
     { key: 'reports', label: 'Reports', icon: BookOpen },
     { key: 'taxes', label: 'Taxes', icon: Percent },
+    { key: 'approvals', label: 'Approvals', icon: Layers },
   ];
   return (
     <div className={`bg-slate-900/70 text-slate-100 border-r border-slate-800 ${open ? 'w-60' : 'w-16'} transition-all duration-300 h-screen fixed left-0 top-0`}> 
